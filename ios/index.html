@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#262d47">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Phase 10">
+    <title>Phase 10 Scorecard</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="app-mark" aria-hidden="true">10</div>
+        <div><p>GAME NIGHT</p><h1>Phase 10</h1></div>
+        <button id="reset" class="icon-button" aria-label="Reset game">↻</button>
+      </header>
+
+      <section class="summary" aria-label="Game summary">
+        <div><span>ROUND</span><strong id="round">1</strong></div>
+        <div><span>LEADING</span><strong id="leader">—</strong><small id="leader-detail">Add players to begin</small></div>
+        <button id="new-round">+ New round</button>
+      </section>
+
+      <section class="players-section">
+        <div class="section-title"><div><p>LIVE SCORECARD</p><h2>Players</h2></div><button id="add-player" class="add">+ Add</button></div>
+        <div id="player-list" class="players"></div>
+        <div id="empty" class="empty"><div>♠</div><h2>Ready to play</h2><p>Add everyone at the table, then enter their score after each round.</p><button class="add open-add">+ Add first player</button></div>
+      </section>
+    </main>
+
+    <dialog id="player-dialog">
+      <form id="player-form">
+        <button type="button" class="close" aria-label="Close">×</button>
+        <p>NEW PLAYER</p><h2>Add to the table</h2>
+        <label for="names">Player names</label>
+        <textarea id="names" rows="5" placeholder="One name per line&#10;e.g. Jamie&#10;Alex" maxlength="250" required></textarea>
+        <small>Add several players at once—one name per line.</small>
+        <button class="add" type="submit">Add player</button>
+      </form>
+    </dialog>
+    <script src="app.js"></script>
+    <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');</script>
+  </body>
+</html>
