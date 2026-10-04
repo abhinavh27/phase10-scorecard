@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phase 10 Scorecard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .phase-cell { display: flex; align-items: center; gap: 9px; }
+      .phase-value { font-family: "DM Mono", monospace; font-size: 13px; font-weight: 500; white-space: nowrap; }
+      .phase-actions { display: flex; align-items: center; gap: 5px; }
+      .complete-phase-button { border: 1px solid #b9e5d6; border-radius: 99px; padding: 6px 9px; background: #e9f7f1; color: #28745f; font-size: 11px; font-weight: 600; white-space: nowrap; }
+      .complete-phase-button:hover { background: #ccefe2; }
+      .phase-down { width: 23px; height: 23px; border: 1px solid #ddd9d0; border-radius: 5px; background: #fff; color: #676a74; font-size: 16px; line-height: 1; }
+      .phase-down:hover { background: #f2f1ed; color: var(--ink); }
+      dialog textarea { width: 100%; border: 1px solid #d9d6cf; border-radius: 8px; padding: 11px 12px; outline: none; resize: vertical; }
+      dialog textarea:focus { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(243,111,93,.12); }
+      .field-hint { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+      @media (max-width: 720px) { table { min-width: 780px; } }
+    </style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <div class="brand-mark" aria-hidden="true"><span>10</span></div>
+        <div>
+          <p class="eyebrow">GAME NIGHT</p>
+          <h1>Phase <em>10</em> Scorecard</h1>
+          <p class="subtitle">Keep every round, phase, and score in one easy place.</p>
+        </div>
+        <button id="reset-game" class="text-button" type="button">Reset game</button>
+      </header>
+
+      <section class="dashboard" aria-label="Game summary">
+        <article class="stat-card accent-yellow">
+          <span class="stat-label">ROUND</span>
+          <strong id="round-number">1</strong>
+          <button id="new-round" type="button">+ New round</button>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">LEADING</span>
+          <strong id="leader-name">—</strong>
+          <span id="leader-detail" class="stat-detail">Add players to begin</span>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">PLAYERS</span>
+          <strong id="player-count">0</strong>
+          <span class="stat-detail">at the table</span>
+        </article>
+      </section>
+
+      <section class="scorecard-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LIVE SCORECARD</p>
+            <h2>Players</h2>
+          </div>
+          <button id="add-player" class="primary-button" type="button"><span>+</span> Add player</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>PLAYER</th>
+                <th>PHASE TO MAKE NOW</th>
+                <th>ADVANCE</th>
+                <th>THIS ROUND</th>
+                <th>TOTAL SCORE</th>
+                <th aria-label="Actions"></th>
+              </tr>
+            </thead>
+            <tbody id="player-list"></tbody>
+          </table>
+          <div id="empty-state" class="empty-state">
+            <div class="empty-icon">♠</div>
+            <h3>Your scorecard is ready</h3>
+            <p>Add everyone at the table, then enter their scores after each round.</p>
+            <button id="empty-add-player" class="primary-button" type="button"><span>+</span> Add first player</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="how-it-works">
+        <div class="tip-number">01</div><p>Enter each player’s points after a hand. Lower total score is better.</p>
+        <div class="tip-number">02</div><p>Tap “Complete phase” to advance a player to their next target.</p>
+        <div class="tip-number">03</div><p>Start a new round when the hand is over to keep the scorecard tidy.</p>
+      </section>
+    </main>
+
+    <dialog id="player-dialog">
+      <form id="player-form" method="dialog">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="eyebrow">NEW PLAYER</p>
+        <h2>Add to the table</h2>
+        <label for="player-name">Player names</label>
+        <textarea id="player-name" name="player-name" rows="5" maxlength="250" placeholder="One name per line&#10;e.g. Jamie&#10;Alex&#10;Morgan" autocomplete="off" required></textarea>
+        <p class="field-hint">Add several players at once—enter one name per line.</p>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="submit">Cancel</button>
+          <button class="primary-button" id="save-player" value="default" type="submit">Add player</button>
+        </div>
+      </form>
+    </dialog>
+
+    <template id="player-row-template">
+      <tr>
+        <td><div class="player-cell"><span class="avatar"></span><input class="name-input" aria-label="Player name" maxlength="22" /></div></td>
+        <td><span class="phase-value">Phase 1</span></td>
+        <td><div class="phase-actions"><button class="complete-phase-button" type="button">Complete phase</button><button class="phase-down" type="button" aria-label="Previous phase">−</button></div></td>
+        <td><input class="score-input" type="number" min="0" max="999" inputmode="numeric" value="0" aria-label="Score this round" /></td>
+        <td class="total-score">0</td>
+        <td><button class="remove-button" type="button" aria-label="Remove player">×</button></td>
+      </tr>
+    </template>
+    <script src="app.js"></script>
+  </body>
+</html>
